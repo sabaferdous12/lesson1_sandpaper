@@ -241,10 +241,19 @@ Display the first ten rows of the Loan data set to see its contents. It is taken
 
 From this exercise we can see that a dataframe can contain different types of data: real numbers (e.g. LoanAmount), integers (ApplicantIncome), categorical data (Gender), and strings (Loan_ID). 
 
+::::::::::::::::: solution
+
 ```{python}
+from pandas import read_csv
+
+# dataframe from .csv file
+df_loan = read_csv("data/loan_data.csv") 
+
+# display contents
+df_loan.head(10)
 
 ```
-
+::::::::::::::::: 
 ::::::::::::::::::::::::
 
 ## Accessing data in a DataFrame
@@ -325,10 +334,17 @@ The number after the second colon indicates the stepsize.
 
 Display the calcium and sodium concentrations of all patients except the first. Check the model solution at the bottom for options.
 
+::::::::::::::::: solution
 
-Mixing the ways to access specific data in a dataframe can be confusing and needs practice.
+```{python}
+df[['calcium', 'sodium']][1:]
+```
+
+::::::::::::::::: 
 
 :::::::::::::::::::::::::::::::::: 
+
+Mixing the ways to access specific data in a dataframe can be confusing and needs practice.
 
 ### Search for missing values
 
@@ -347,12 +363,25 @@ This shows that there are no missing entries in our dataframe.
  In the Loan data set, check the entry 'Self-employed' for ID LP001059. It shows how a missing value is represented as 'NaN' (not a number).
 
  Verify that the output of `isnull` in this case is `True`
+ 
+::::::::::::::::: solution
+
+```{python}
+df_loan['Self_Employed'][8]
+```
+
+
+```{python}
+df_loan['Self_Employed'][8:9].isnull()
+```
+
+::::::::::::::::: 
 
 :::::::::::::::::::::::::::::::::: 
 
-# Basic data features
+## Basic data features
 
-## Summary Statistics
+### Summary Statistics
 
 To get a summary of basic data features use the function `describe`:
 
@@ -390,9 +419,13 @@ description['calcium'][1]
 
 Use your own .csv data set to practice. (If you don't have a data set at hand, any excel table can be exported as .csv.) Read it into a dataframe, check its header, access indivdual values or sets of values. Create a statistics using `describe` and check for missing values using `.isnull`.
 
+::::::::::::::::: solution
+ [ad libitum]
+::::::::::::::::: 
+
 :::::::::::::::::::::::::::::::::: 
 
-## Iterating through the columns
+### Iterating through the columns
 
 Now we know how to access all data in a dataframe and how to get a summary statistics over each column. 
 
@@ -423,7 +456,7 @@ print('The medians are: ', conc_medians)
 
 This approach is useful for data frames with a large number of columns. For instance, it is possible to then create a boxplot or histogram for the means, medians etc. of the dataframe and thus to get an overview of all (comparable) columns. 
 
-## Selecting a subset based on a template
+### Selecting a subset based on a template
 
 An analysis of a data set may need to be done on part of the data. This can often be formulated by using a logical condition which specifies the required subset.
 
@@ -486,8 +519,27 @@ Using the Boolean, we only pick the rows that are labelled '1' and thus get a su
  
 Modify the code to calculate the number of samples labelled 0 and check the number of rows of that subset.
 
+::::::::::::::::: solution
+
+```{python}
+from numpy.random import randint
+
+no_rows = len(df)
+
+randomLabel = randint(2, size=no_rows)
+
+df['gender'] = randomLabel
+
+df_male = df['gender'] == 0
+
+no_males = len(df[df_male])
+
+print(no_males, 'samples are labelled "male".')
+
+```
+::::::::::::::::: 
 ::::::::::::::::::::::::::::::::::
-# Visualisation of data
+## Visualisation of data
 
 It is easy to see from the numbers that the concentrations of sodium are much higher than that of calcium. However, to also compare the medians, percentiles and the spread of the data it is better to use visualisation. 
 
@@ -516,7 +568,7 @@ plt.boxplot(df['calcium'])
 plt.show()
 ```
 
-## Plots using Matplotlib
+### Plots using Matplotlib
 
 > [__Matplotlib__](https://matplotlib.org) is a comprehensive library for creating static, animated, and interactive visualizations in Python.
 
@@ -548,6 +600,7 @@ ax.set_title('Boxplot of Everley\'s Calcium');
 
 ```
 
+![png](/Users/sabaferdous/git/lesson1_sandpaper/episodes/fig/output_93_0.png)
 
 Note how following the actual plot we define the title of the plot by referring to the same coordinate system `ax`.
 
@@ -570,7 +623,7 @@ ax[1].set_title('Sodium');
 
 
     
-![png](output_95_0.png)
+![png](/Users/sabaferdous/git/lesson1_sandpaper/episodes/fig/output_95_0.png)
     
 
 
@@ -591,19 +644,33 @@ ax.set_title('Boxplot of Calcium (left) and Sodium (right)')
 ```
 
    
-![png](output_98_1.png)
+![png](/Users/sabaferdous/git/lesson1_sandpaper/episodes/fig/output_98_1.png)
     
 
 :::::::::::::::::::::::::::::: challenge
-## DIY6: Boxplot from Loan data
+### DIY6: Boxplot from Loan data
 
-Plot the boxplots of the 'ApplicantIncome' and the 'CoapplicantIncome' in the Loan data using the above code. 
+Plot the boxplots of the 'ApplicantIncome' and the 'CoapplicantIncome' in the Loan data using the above code.
 
+::::::::::::::::: solution
+
+```{python}
+fig, ax = subplots(ncols=1, nrows=1)
+
+ax.boxplot([df_loan['ApplicantIncome'], df_loan['CoapplicantIncome']], positions=[1, 2])
+ax.set_title('Applicant Income (left) & Co-Applicant Income (right)');
+
+```
+
+
+    
+![Applicant Income (left) & Co-Applicant Income (right)](/Users/sabaferdous/git/lesson1_sandpaper/episodes/fig/output_139_0.png)
+::::::::::::::::: 
 :::::::::::::::::::::::::::::: 
 
 
 
-## Histogram
+### Histogram
 
 Another good overview is the histogram: Containers or 'bins' are created over the range of values found within a column and the count of the values for each bin is plotted on the vertical axis.
 
@@ -623,7 +690,7 @@ fig.suptitle('Histograms of Everley concentrations', fontsize=15);
 ```
 
 
-![png](output_102_0.png)
+![png](/Users/sabaferdous/git/lesson1_sandpaper/episodes/fig/output_102_0.png)
     
 
 
@@ -646,7 +713,7 @@ fig.suptitle('Histograms with Different Binnings', fontsize=16);
 
 
     
-![png](output_104_0.png)
+![png](/Users/sabaferdous/git/lesson1_sandpaper/episodes/fig/output_104_0.png)
     
 
 
@@ -670,7 +737,7 @@ fig.tight_layout()
 
 
     
-![png](output_106_0.png)
+![png](/Users/sabaferdous/git/lesson1_sandpaper/episodes/fig/output_106_0.png)
     
 
 ::::::::::::::::::::::::::::::: challenge 
@@ -678,6 +745,25 @@ fig.tight_layout()
 
 Take the loan data and display the histogram of the loan amount that people asked for. (Loan amounts are divided by 1000, i.e. in k£ on the horizontal axis).  Use e.g. 20 bins. 
 
+::::::::::::::::: solution
+
+
+```{python}
+# Histogram of loan amounts in k£
+
+fig, ax = subplots()
+
+ax.hist(df_loan['LoanAmount'], bins=20)
+ax.set(xlabel='Loan amount', ylabel='Count');
+
+ax.set_title('Histograms of Loan Amounts', fontsize=16);
+
+```
+
+
+    
+![Histograms of Loan Amounts](/Users/sabaferdous/git/lesson1_sandpaper/episodes/fig/output_142_0.png)
+::::::::::::::::: 
 ::::::::::::::::::::::::::::::: 
 
 # Handling the Diabetes Data Set
@@ -747,7 +833,7 @@ ax.bar(bins, conc_means);
 ```
 
     
-![png](output_116_1.png)
+![png](/Users/sabaferdous/git/lesson1_sandpaper/episodes/fig/output_116_1.png)
     
 
 
@@ -757,7 +843,7 @@ In this example, we see how important it is to check the data before working wit
 
 
 
-# Assignment: The cervical cancer data set
+## Assignment: The cervical cancer data set
 
 Download the cervical cancer data set provided, import it using `read_csv`.
 
@@ -769,179 +855,7 @@ Download the cervical cancer data set provided, import it using `read_csv`.
 - Get the mean and standard distribution of age of first sexual intercourse
 
 
-# Appendix: Model solutions to DIY exercises
 
-:::::::::::::::::::::: challenge
-## DIY1: Read data into a dataframe
-    
-Download the data file 'loan_data.csv' using the link given above in "Materials for this Lesson". It contains data that can be used for the assessment of loan applications. Read the data into a DataFrame. It is best to assign it a name other than 'df' (to avoid overwriting the Evereley data set). 
-
-Display the first ten rows of the Loan data set to see its contents. It is taken from a [tutorial on Data Handling in Python](https://www.analyticsvidhya.com/blog/2016/01/complete-tutorial-learn-data-science-python-scratch-2/) which you might find useful for further practice. 
-
-::::::::::::::::::::::
-
-
-```{python}
-from pandas import read_csv
-
-# dataframe from .csv file
-df_loan = read_csv("data/loan_data.csv") 
-
-# display contents
-df_loan.head(10)
-
-```
-
-
-:::::::::::::::::::::: challenge
-
-## DIY2: Select data from dataframe
-
-Display the calcium and sodium concentrations of all patients except the first. 
-
-```{python}
-df[['calcium', 'sodium']][1:]
-```
-
-
-
-::::::::::::::::::::::
-
-
-:::::::::::::::::::::: challenge
-
-## DIY3: Find NaN in dataframe
-
- Check the entry 'Self-employed' for ID LP001059. It shows how a missing value is represented as 'NaN' (not a number).
-
- Verify that the output of `isnull` in this case is `True`
-
-```{python}
-df_loan['Self_Employed'][8]
-```
-
-
-```{python}
-df_loan['Self_Employed'][8:9].isnull()
-```
-
-
-```{python}
-
-```
-:::::::::::::::::::::: 
-
-:::::::::::::::::::::: challenge
-## DIY4: Practice
-
- Use your own .csv data set to practice. Read it into a dataframe, check its header, access indivdual values or sets of values. Create a statistics using `describe` and check for missing values using `.isnull`.
-
-
- [ad libitum]
- 
-:::::::::::::::::::::: 
-
-:::::::::::::::::::::: challenge
-## DIY5: Using a template
-
- Write code to calculate the number of samples labelled male.
-
-
-
-```{python}
-from numpy.random import randint
-
-no_rows = len(df)
-
-randomLabel = randint(2, size=no_rows)
-
-df['gender'] = randomLabel
-
-df_male = df['gender'] == 0
-
-no_males = len(df[df_male])
-
-print(no_males, 'samples are labelled "male".')
-
-```
-
-:::::::::::::::::::::: 
-
-:::::::::::::::::::::: challenge
-
-## DIY6: Boxplot from Loan data
-
-Plot the boxplots of the 'ApplicantIncome' and the 'CoapplicantIncome' using the above code. 
-
-```{python}
-fig, ax = subplots(ncols=1, nrows=1)
-
-ax.boxplot([df_loan['ApplicantIncome'], df_loan['CoapplicantIncome']], positions=[1, 2])
-ax.set_title('Applicant Income (left) & Co-Applicant Income (right)');
-
-```
-
-
-    
-![png](output_139_0.png)
-    
-
-:::::::::::::::::::::: 
-
-:::::::::::::::::::::: challenge
-
-## DIY7: Create histogram from data column
-
-Take the loan data and display the histogram of the loan amount that people asked for. (Loan amounts are divided by 1000, i.e. in k£ on the horizontal axis). Use e.g. 20 bins. 
-
-
-```{python}
-# Histogram of loan amounts in k£
-
-fig, ax = subplots()
-
-ax.hist(df_loan['LoanAmount'], bins=20)
-ax.set(xlabel='Loan amount', ylabel='Count');
-
-ax.set_title('Histograms of Loan Amounts', fontsize=16);
-
-```
-
-
-    
-![png](output_142_0.png)
-    
-:::::::::::::::::::::: 
-
-
-## Figures
-
-You can also include figures generated from R Markdown:
-
-```{r pyramid, fig.alt = "pie chart illusion of a pyramid", fig.cap = "Sun arise each and every morning"}
-pie(
-  c(Sky = 78, "Sunny side of pyramid" = 17, "Shady side of pyramid" = 5), 
-  init.angle = 315, 
-  col = c("deepskyblue", "yellow", "yellow3"), 
-  border = FALSE
-)
-```
-
-Or you can use standard markdown for static figures with the following syntax:
-
-`![optional caption that appears below the figure](figure url){alt='alt text for
-accessibility purposes'}`
-
-![You belong in The Carpentries!](https://raw.githubusercontent.com/carpentries/logo/master/Badge_Carpentries.svg){alt='Blue Carpentries hex person logo with no text.'}
-
-## Math
-
-One of our episodes contains $\LaTeX$ equations when describing how to create
-dynamic reports with {knitr}, so we now use mathjax to describe this:
-
-`$\alpha = \dfrac{1}{(1 - \beta)^2}$` becomes: $\alpha = \dfrac{1}{(1 - \beta)^2}$
-
-Cool, right?
 
 ::::::::::::::::::::::::::::::::::::: keypoints 
 
